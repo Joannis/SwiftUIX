@@ -39,6 +39,7 @@ public struct CocoaTextField<Label: View>: CocoaView {
     private var returnKeyType: UIReturnKeyType?
     private var textColor: UIColor?
     private var textContentType: UITextContentType?
+    private var isSecure: Bool?
     
     public var body: some View {
         return ZStack(alignment: Alignment(horizontal: .init(from: multilineTextAlignment), vertical: .top)) {
@@ -66,7 +67,8 @@ public struct CocoaTextField<Label: View>: CocoaView {
                 placeholder: placeholder,
                 returnKeyType: returnKeyType,
                 textColor: textColor,
-                textContentType: textContentType
+                textContentType: textContentType,
+                isSecure: isSecure
             )
         }
     }
@@ -97,6 +99,7 @@ public struct _CocoaTextField: UIViewRepresentable {
     var returnKeyType: UIReturnKeyType?
     var textColor: UIColor?
     var textContentType: UITextContentType?
+    var isSecure: Bool?
     
     public class Coordinator: NSObject, UITextFieldDelegate {
         var base: _CocoaTextField
@@ -215,6 +218,10 @@ public struct _CocoaTextField: UIViewRepresentable {
             uiView.textContentType = textContentType
         }
         
+        if let isSecure = isSecure {
+            uiView.isSecureTextEntry = isSecure
+        }
+        
         uiView.text = text
         uiView.textAlignment = .init(multilineTextAlignment)
         
@@ -295,6 +302,10 @@ extension CocoaTextField {
 extension CocoaTextField {
     public func autocapitalization(_ autocapitalization: UITextAutocapitalizationType) -> Self {
         then({ $0.autocapitalization = autocapitalization })
+    }
+    
+    public func secure(_ isSecure: Bool = true) -> Self {
+        then({ $0.isSecure = isSecure })
     }
     
     public func borderStyle(_ borderStyle: UITextField.BorderStyle) -> Self {
